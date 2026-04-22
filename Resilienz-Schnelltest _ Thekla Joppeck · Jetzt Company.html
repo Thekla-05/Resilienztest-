@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resilienz-Schnelltest | Thekla Joppeck · Jetzt Company</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0d1117;
+  --surf:     #161b22;
+  --surf2:    #1e2530;
+  --border:   rgba(255,255,255,0.10);
+  --gold:     #d4a843;
+  --glow:     rgba(212,168,67,0.35);
+  --goldbg:   rgba(212,168,67,0.12);
+  --text:     #e8e3da;
+  --dim:      rgba(232,227,218,0.55);
+  --muted:    rgba(232,227,218,0.32);
+  --green:    #4caf87;
+  --red:      #e05050;
+  --orange:   #e0903a;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Outfit',sans-serif;
+  background:var(--bg); color:var(--text);
+  min-height:100vh; overflow-x:hidden;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 5%,  rgba(212,168,67,.07) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 90%, rgba(76,175,135,.04) 0%,transparent 60%);
+}
+
+/* SCREENS */
+.screen { display:none; min-height:100vh; position:relative; z-index:1; flex-direction:column; }
+.screen.active { display:flex; }
+
+/* ── INTRO ── */
+#s-intro {
+  align-items:center; justify-content:center;
+  text-align:center; padding:60px 24px;
+}
+.badge {
+  display:inline-block;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--gold); border:1px solid rgba(212,168,67,.35);
+  padding:6px 16px; border-radius:2px; margin-bottom:32px;
+}
+.intro-h1 {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(38px,7vw,70px); font-weight:300; line-height:1.1; letter-spacing:-1px;
+}
+.intro-h1 em { font-style:italic; color:var(--gold); }
+.intro-sub {
+  font-size:15px; color:var(--dim); max-width:480px;
+  margin:20px auto 44px; line-height:1.85;
+}
+.stats { display:flex; gap:40px; justify-content:center; flex-wrap:wrap; margin-bottom:44px; }
+.stat-v { display:block; font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; color:var(--gold); }
+.stat-l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+.btn-gold {
+  background:var(--gold); color:#0d1117; border:none;
+  padding:17px 48px; font-family:'Outfit',sans-serif; font-size:15px; font-weight:600;
+  cursor:pointer; border-radius:2px; transition:transform .2s, box-shadow .2s;
+}
+.btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 28px var(--glow); }
+.intro-note { margin-top:16px; font-size:12px; color:var(--muted); }
+
+/* ── QUESTIONS ── */
+#s-question { flex-direction:column; }
+.q-bar {
+  padding:20px 40px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+}
+.q-logo { font-family:'Cormorant Garamond',serif; font-size:17px; font-weight:600; color:var(--gold); white-space:nowrap; }
+.prog-wrap { flex:1; max-width:380px; }
+.prog-track { height:2px; background:var(--border); border-radius:2px; overflow:hidden; }
+.prog-fill  { height:100%; background:var(--gold); border-radius:2px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.prog-lbl   { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); text-align:right; margin-top:6px; letter-spacing:1px; }
+
+.q-main {
+  flex:1; display:flex; flex-direction:column; justify-content:center;
+  padding:48px 40px; max-width:760px; width:100%; margin:0 auto;
+}
+.q-cat  { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.q-text { font-family:'Cormorant Garamond',serif; font-size:clamp(22px,3.5vw,34px); line-height:1.38; margin-bottom:10px; }
+.q-hint { font-size:13px; color:var(--muted); font-style:italic; margin-bottom:36px; }
+
+.opts { display:flex; flex-direction:column; gap:11px; }
+.opt {
+  display:flex; align-items:center; gap:14px;
+  background:var(--surf); border:1px solid var(--border); border-radius:4px;
+  padding:15px 18px; cursor:pointer; font-size:14px; color:var(--dim);
+  transition:border-color .18s, background .18s, color .18s; text-align:left;
+}
+.opt:hover { border-color:rgba(212,168,67,.4); color:var(--text); background:var(--surf2); }
+.opt.chosen { border-color:var(--gold); background:var(--surf2); color:var(--text); }
+.opt-key {
+  font-family:'DM Mono',monospace; font-size:11px;
+  width:28px; height:28px; border-radius:3px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--border); background:var(--surf2); color:var(--gold);
+  transition:all .18s;
+}
+.opt.chosen .opt-key { background:var(--gold); color:var(--bg); border-color:var(--gold); }
+
+.q-actions { display:flex; gap:12px; margin-top:28px; flex-wrap:wrap; align-items:center; }
+.btn-back {
+  background:transparent; border:1px solid var(--border); color:var(--dim);
+  padding:13px 24px; border-radius:2px; font-family:'Outfit',sans-serif; font-size:14px;
+  cursor:pointer; transition:border-color .2s, color .2s;
+}
+.btn-back:hover { border-color:rgba(255,255,255,.25); color:var(--text); }
+.btn-next {
+  background:var(--gold); color:var(--bg); border:none;
+  padding:13px 28px; border-radius:2px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600;
+  cursor:pointer; transition:transform .2s, box-shadow .2s, opacity .2s;
+}
+.btn-next:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 16px var(--glow); }
+.btn-next:disabled { opacity:.3; cursor:not-allowed; }
+.btn-skip {
+  background:none; border:none; color:var(--muted); font-family:'Outfit',sans-serif; font-size:12px;
+  cursor:pointer; text-decoration:underline; text-underline-offset:3px; padding:0;
+  transition:color .2s;
+}
+.btn-skip:hover { color:var(--dim); }
+
+/* ── CONTACT SCREEN ── */
+#s-contact { align-items:center; justify-content:center; padding:48px 24px; }
+.ccard {
+  background:var(--surf); border:1px solid var(--border);
+  border-radius:6px; padding:48px 44px; max-width:500px; width:100%; text-align:center;
+}
+.ccard h2 { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:400; margin-bottom:10px; }
+.ccard p  { font-size:14px; color:var(--dim); margin-bottom:32px; line-height:1.75; }
+
+.field { margin-bottom:14px; text-align:left; }
+.field label {
+  display:block; font-family:'DM Mono',monospace; font-size:10px;
+  letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:7px;
+}
+.field input,
+.field select {
+  display:block; width:100%;
+  background:#181f2a;
+  border:1px solid rgba(255,255,255,0.16);
+  color:#e8e3da;
+  padding:13px 15px; border-radius:3px;
+  font-family:'Outfit',sans-serif; font-size:14px;
+  outline:none; -webkit-appearance:none; appearance:none;
+  transition:border-color .2s, background .2s;
+  cursor:text;
+}
+.field select { cursor:pointer; }
+.field input:focus,
+.field select:focus { border-color:rgba(212,168,67,.6); background:#1d2638; }
+.field input::placeholder { color:rgba(232,227,218,0.28); }
+.field select option { background:#181f2a; color:#e8e3da; }
+.btn-submit {
+  width:100%; background:var(--gold); color:var(--bg); border:none;
+  padding:15px; font-family:'Outfit',sans-serif; font-size:15px; font-weight:600;
+  cursor:pointer; border-radius:2px; margin-top:6px;
+  transition:transform .2s, box-shadow .2s;
+}
+.btn-submit:hover { transform:translateY(-1px); box-shadow:0 4px 20px var(--glow); }
+.privacy { font-size:11px; color:var(--muted); margin-top:14px; line-height:1.65; }
+
+/* ── RESULT ── */
+#s-result { flex-direction:column; }
+.r-header {
+  padding:22px 40px; border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+}
+.r-logo { font-family:'Cormorant Garamond',serif; font-size:17px; color:var(--gold); font-weight:600; }
+.btn-print {
+  background:transparent; border:1px solid var(--gold); color:var(--gold);
+  padding:9px 18px; font-family:'Outfit',sans-serif; font-size:12px;
+  cursor:pointer; border-radius:2px; transition:background .2s;
+}
+.btn-print:hover { background:var(--goldbg); }
+
+.r-body { flex:1; padding:52px 40px; max-width:880px; margin:0 auto; width:100%; }
+
+.score-row { display:grid; grid-template-columns:180px 1fr; gap:44px; align-items:center; margin-bottom:60px; }
+@media(max-width:600px){ .score-row{grid-template-columns:1fr;gap:28px;} }
+
+.circ-wrap { position:relative; width:180px; height:180px; }
+.circ-svg  { width:180px; height:180px; transform:rotate(-90deg); }
+.c-track { fill:none; stroke:var(--surf2); stroke-width:9; }
+.c-fill  { fill:none; stroke-width:9; stroke-linecap:round; stroke-dasharray:503; stroke-dashoffset:503; transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1); }
+.circ-mid { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.score-n { font-family:'Cormorant Garamond',serif; font-size:50px; font-weight:700; line-height:1; }
+.score-l { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); margin-top:4px; }
+
+.r-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  padding:7px 14px; border-radius:3px; margin-bottom:14px;
+}
+.st-r { background:rgba(224,80,80,.13);  color:var(--red);    border:1px solid rgba(224,80,80,.3); }
+.st-o { background:rgba(224,144,58,.13); color:var(--orange); border:1px solid rgba(224,144,58,.3); }
+.st-g { background:rgba(76,175,135,.13); color:var(--green);  border:1px solid rgba(76,175,135,.3); }
+
+.r-hl { font-family:'Cormorant Garamond',serif; font-size:clamp(24px,3.5vw,38px); font-weight:400; line-height:1.22; margin-bottom:14px; }
+.r-hl em { font-style:italic; color:var(--gold); }
+.r-desc { font-size:14px; color:var(--dim); line-height:1.85; }
+
+.slbl { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+
+.dim-item { margin-bottom:22px; }
+.dim-row  { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+.dim-name { font-size:14px; font-weight:500; }
+.dim-pct  { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
+.dim-trk  { height:6px; background:var(--surf2); border-radius:3px; overflow:hidden; }
+.dim-bar  { height:100%; border-radius:3px; width:0; transition:width 1.3s cubic-bezier(.4,0,.2,1); }
+.dim-note { font-size:12px; color:var(--muted); margin-top:5px; font-style:italic; }
+
+.rec-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; margin-bottom:52px; }
+.rec-card { background:var(--surf); border:1px solid var(--border); border-radius:4px; padding:20px; transition:border-color .2s; }
+.rec-card:hover { border-color:rgba(212,168,67,.3); }
+.rec-icon { font-size:22px; margin-bottom:10px; }
+.rec-card h4 { font-size:14px; font-weight:600; margin-bottom:6px; }
+.rec-card p  { font-size:13px; color:var(--dim); line-height:1.65; }
+
+/* CTA BOX */
+.cta-box {
+  background:linear-gradient(135deg,var(--surf) 0%,var(--surf2) 100%);
+  border:1px solid rgba(212,168,67,.28); border-radius:6px; padding:44px;
+  position:relative; overflow:hidden; margin-bottom:16px;
+}
+.cta-box::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(212,168,67,.07) 0%,transparent 55%);
+}
+.cta-box h3 { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:400; margin-bottom:10px; position:relative; }
+.cta-box h3 em { font-style:italic; color:var(--gold); }
+.cta-box > p { font-size:14px; color:var(--dim); line-height:1.75; margin-bottom:28px; position:relative; max-width:500px; }
+
+.cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; position:relative; }
+@media(max-width:660px){ .cta-grid{grid-template-columns:1fr;} }
+
+.cta-info { display:flex; flex-direction:column; gap:12px; justify-content:center; }
+.ci-item  {
+  display:flex; align-items:flex-start; gap:12px;
+  background:rgba(255,255,255,.04); border:1px solid var(--border);
+  border-radius:4px; padding:13px 15px;
+}
+.ci-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.ci-lbl  { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+.ci-val  { font-size:13px; font-weight:500; color:var(--text); word-break:break-all; }
+a.ci-val { text-decoration:none; }
+a.ci-val:hover { color:var(--gold); }
+
+/* CONTACT FORM IN RESULT - fully interactive */
+.cf { display:flex; flex-direction:column; }
+.cf-lbl { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+
+.cf input,
+.cf textarea {
+  display:block;
+  width:100%;
+  background:#111820;
+  border:1px solid rgba(255,255,255,0.15);
+  color:#e8e3da;
+  padding:11px 13px;
+  border-radius:3px;
+  font-family:'Outfit',sans-serif; font-size:13px;
+  outline:none;
+  -webkit-appearance:none; appearance:none;
+  transition:border-color .2s, background .2s;
+  cursor:text;
+  margin-bottom:9px;
+  resize:none;
+  /* Ensure full interactivity */
+  position:static;
+  z-index:auto;
+  pointer-events:auto;
+  opacity:1;
+  -webkit-user-select:text;
+  user-select:text;
+}
+.cf textarea { min-height:72px; }
+.cf input:focus,
+.cf textarea:focus { border-color:rgba(212,168,67,.6); background:#192030; }
+.cf input::placeholder,
+.cf textarea::placeholder { color:rgba(232,227,218,0.28); }
+
+.btn-send {
+  background:var(--gold); color:var(--bg); border:none;
+  padding:13px 20px; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600;
+  cursor:pointer; border-radius:2px; width:100%;
+  transition:transform .2s, box-shadow .2s;
+}
+.btn-send:hover { transform:translateY(-1px); box-shadow:0 4px 16px var(--glow); }
+
+.f-msg {
+  margin-top:10px; padding:11px 14px; border-radius:3px;
+  font-size:13px; line-height:1.6; display:none;
+}
+.f-msg.ok  { background:rgba(76,175,135,.14); border:1px solid rgba(76,175,135,.3); color:var(--green); }
+.f-msg.err { background:rgba(224,80,80,.14);  border:1px solid rgba(224,80,80,.3);  color:var(--red); }
+
+.r-footer {
+  padding:22px 40px; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.r-footer p    { font-size:12px; color:var(--muted); }
+.r-footer span { font-size:12px; color:var(--gold); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:520px){
+  .q-bar,.r-header,.r-footer{padding:14px 18px;}
+  .q-main,.r-body{padding:28px 18px;}
+  .ccard{padding:32px 20px;}
+  .cta-box{padding:28px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SCREEN 1: INTRO ══ -->
+<div id="s-intro" class="screen active">
+  <div class="badge">Jetzt Company · Kostenloser Unternehmenstest · 5 Minuten</div>
+  <h1 class="intro-h1">Wie resilient ist<br>Ihr Team im<br><em>Kundenkontakt?</em></h1>
+  <p class="intro-sub">10 gezielte Fragen. Eine ehrliche Analyse. Konkrete Handlungsempfehlungen – speziell für Unternehmen mit Serviceteams.</p>
+  <div class="stats">
+    <div><span class="stat-v">10</span><span class="stat-l">Fragen</span></div>
+    <div><span class="stat-v">5</span><span class="stat-l">Minuten</span></div>
+    <div><span class="stat-v">100%</span><span class="stat-l">Kostenlos</span></div>
+  </div>
+  <button class="btn-gold" onclick="startTest()">Test starten →</button>
+  <p class="intro-note">Keine Anmeldung. Sofortiges Ergebnis. Für Führungskräfte &amp; HR-Verantwortliche.</p>
+</div>
+
+<!-- ══ SCREEN 2: QUESTIONS ══ -->
+<div id="s-question" class="screen">
+  <div class="q-bar">
+    <div class="q-logo">Thekla Joppeck · Jetzt Company</div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+      <div class="prog-lbl" id="prog-lbl">1 / 10</div>
+    </div>
+  </div>
+  <div class="q-main" id="q-main">
+    <div class="q-cat"  id="q-cat"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="q-hint" id="q-hint"></div>
+    <div class="opts"   id="q-opts"></div>
+    <div class="q-actions">
+      <button class="btn-back" id="btn-back" onclick="prevQ()" style="display:none">← Zurück</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()" disabled>Weiter →</button>
+      <button class="btn-skip" onclick="skipQ()">Überspringen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3: CONTACT ══ -->
+<div id="s-contact" class="screen">
+  <div class="ccard">
+    <h2>Fast geschafft.</h2>
+    <p>Tragen Sie Ihre Kontaktdaten ein – Sie erhalten Ihr persönliches Ergebnis sofort angezeigt.</p>
+    <div class="field"><label>Ihr Name</label>
+      <input type="text" id="c-name" placeholder="Vorname Nachname" autocomplete="name"></div>
+    <div class="field"><label>Ihr Unternehmen</label>
+      <input type="text" id="c-company" placeholder="Unternehmensname" autocomplete="organization"></div>
+    <div class="field"><label>Ihre Funktion</label>
+      <select id="c-role">
+        <option value="" disabled selected>Bitte wählen …</option>
+        <option>Geschäftsführung</option>
+        <option>HR / Personalleitung</option>
+        <option>Abteilungsleitung</option>
+        <option>Teamleitung</option>
+        <option>Sonstiges</option>
+      </select></div>
+    <div class="field"><label>E-Mail-Adresse</label>
+      <input type="email" id="c-email" placeholder="ihre@email.de" autocomplete="email"></div>
+    <div class="field"><label>Branche</label>
+      <select id="c-industry">
+        <option value="" disabled selected>Bitte wählen …</option>
+        <option>Hotellerie &amp; Gastronomie</option>
+        <option>Einzelhandel &amp; Retail</option>
+        <option>Pflege &amp; Gesundheit</option>
+        <option>Immobilien &amp; Verwaltung</option>
+        <option>Logistik &amp; Verkehr</option>
+        <option>Banking &amp; Versicherung</option>
+        <option>Sonstiges</option>
+      </select></div>
+    <button class="btn-submit" onclick="goResult()">Mein Ergebnis anzeigen →</button>
+    <p class="privacy">🔒 Ihre Daten werden vertraulich behandelt. Sie erhalten eine Antwort von Thekla Joppeck · Thekla@innenlicht-jetzt.com</p>
+  </div>
+</div>
+
+<!-- ══ SCREEN 4: RESULT ══ -->
+<div id="s-result" class="screen">
+  <div class="r-header">
+    <div class="r-logo">Thekla Joppeck · Jetzt Company · Resilienz-Analyse</div>
+    <button class="btn-print" onclick="window.print()">📄 Als PDF speichern</button>
+  </div>
+
+  <div class="r-body">
+    <!-- Score circle -->
+    <div class="score-row">
+      <div class="circ-wrap">
+        <svg class="circ-svg" viewBox="0 0 180 180">
+          <circle class="c-track" cx="90" cy="90" r="80"/>
+          <circle class="c-fill"  cx="90" cy="90" r="80" id="c-fill"/>
+        </svg>
+        <div class="circ-mid">
+          <span class="score-n" id="score-n">—</span>
+          <span class="score-l">Punkte</span>
+        </div>
+      </div>
+      <div>
+        <div id="r-badge" class="r-badge"></div>
+        <h2 class="r-hl"  id="r-hl"></h2>
+        <p  class="r-desc" id="r-desc"></p>
+      </div>
+    </div>
+
+    <!-- Dimensions -->
+    <div style="margin-bottom:48px">
+      <div class="slbl">Analyse nach Dimension</div>
+      <div id="dim-list"></div>
+    </div>
+
+    <!-- Recommendations -->
+    <div style="margin-bottom:52px">
+      <div class="slbl">Ihre Top-Empfehlungen</div>
+      <div class="rec-grid" id="rec-grid"></div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h3>Bereit für den nächsten Schritt?<br><em>Lassen Sie uns sprechen.</em></h3>
+      <p>In einem kostenlosen 30-Minuten-Gespräch zeige ich Ihnen, welche konkreten Maßnahmen für Ihr Team den größten Unterschied machen.</p>
+      <div class="cta-grid">
+
+        <div class="cta-info">
+          <div class="ci-item">
+            <span class="ci-icon">📞</span>
+            <div><div class="ci-lbl">Direkt anrufen</div>
+              <a href="tel:+4915679790085" class="ci-val">+49 156 7979 0085</a></div>
+          </div>
+          <div class="ci-item">
+            <span class="ci-icon">✉</span>
+            <div><div class="ci-lbl">E-Mail</div>
+              <span class="ci-val">Thekla@innenlicht-jetzt.com</span></div>
+          </div>
+          <div class="ci-item">
+            <span class="ci-icon">🏢</span>
+            <div><div class="ci-lbl">Unternehmen</div>
+              <span class="ci-val">Jetzt Company · Hamburg</span></div>
+          </div>
+        </div>
+
+        <div class="cf" id="cf-form">
+          <div class="cf-lbl">Nachricht direkt senden:</div>
+          <input  type="text"  id="f-name"    placeholder="Ihr Name &amp; Unternehmen">
+          <input  type="email" id="f-email"   placeholder="Ihre E-Mail-Adresse">
+          <textarea            id="f-msg-txt" placeholder="Ihre Nachricht (optional)" rows="3"></textarea>
+          <button class="btn-send" id="f-btn" onclick="sendForm()">Rückruf / Termin anfragen →</button>
+          <div class="f-msg" id="f-feedback"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="r-footer">
+    <p>Thekla Joppeck · Jetzt Company · innenlicht-jetzt.com · Hamburg · 2026</p>
+    <span>Thekla@innenlicht-jetzt.com &nbsp;·&nbsp; +49 156 7979 0085</span>
+  </div>
+</div>
+
+<script>
+/* ─── DATA ─── */
+const QS = [
+  { cat:"Dimension 1 — Emotionale Belastung",
+    text:"Wie oft berichten Ihre Mitarbeitenden im Kundenkontakt von emotionaler Erschöpfung nach der Arbeit?",
+    hint:"Denken Sie an die letzten 3 Monate.", dim:0,
+    opts:[{l:"Regelmäßig – das ist fast täglich ein Thema",s:1},{l:"Gelegentlich – besonders in Stoßzeiten",s:2},{l:"Selten – nur bei besonderen Belastungen",s:3},{l:"Kaum – unser Team wirkt stabil",s:4}]},
+  { cat:"Dimension 1 — Emotionale Belastung",
+    text:"Gibt es ein strukturiertes Angebot zur emotionalen Entlastung für Servicemitarbeitende?",
+    hint:"Z.B. Supervisionen, Gesprächsangebote, psychologische Beratung.", dim:0,
+    opts:[{l:"Nein, darüber haben wir noch nie nachgedacht",s:1},{l:"Wir haben gesprochen, aber nichts umgesetzt",s:2},{l:"Es gibt informelle Angebote, aber nichts Systematisches",s:3},{l:"Ja, wir haben klare Strukturen dafür",s:4}]},
+  { cat:"Dimension 2 — Führungskultur",
+    text:"Wie häufig führen Teamleitungen aktive Gespräche über das Wohlbefinden ihrer Mitarbeitenden?",
+    hint:"Nicht über Leistung – sondern gezielt über den Menschen.", dim:1,
+    opts:[{l:"Das passiert nicht systematisch",s:1},{l:"Nur wenn jemand offensichtlich Probleme hat",s:2},{l:"In Mitarbeitergesprächen, ca. 1–2x pro Jahr",s:3},{l:"Regelmäßig, mindestens monatlich",s:4}]},
+  { cat:"Dimension 2 — Führungskultur",
+    text:"Wenn ein Mitarbeitender Überlastungssignale zeigt – wie reagiert Ihr Unternehmen?",
+    hint:"Z.B. erhöhte Fehlerquote, Rückzug, häufige Krankentage.", dim:1,
+    opts:[{l:"Wir reagieren erst, wenn jemand ausfällt",s:1},{l:"Die Führungskraft kümmert sich, wenn sie es bemerkt",s:2},{l:"Wir haben erste Ansätze, aber kein festes Protokoll",s:3},{l:"Es gibt klare Früherkennung und Prozesse",s:4}]},
+  { cat:"Dimension 3 — Fluktuationsrisiko",
+    text:"Wie hoch schätzen Sie die innere Kündigungsrate in Ihrem Kundenkontakt-Team?",
+    hint:"Mitarbeitende, die noch da sind, aber innerlich bereits aufgegeben haben.", dim:2,
+    opts:[{l:"Sehr hoch – ich spüre das täglich",s:1},{l:"Eher hoch – einige sind deutlich desengagiert",s:2},{l:"Mittel – es gibt einzelne Fälle",s:3},{l:"Gering – mein Team ist motiviert",s:4}]},
+  { cat:"Dimension 3 — Fluktuationsrisiko",
+    text:"Wie viele Mitarbeitende haben Ihren Kundenkontakt-Bereich in den letzten 12 Monaten verlassen?",
+    hint:"Freiwillige Kündigungen, nicht Ruhestand oder Vertragsende.", dim:2,
+    opts:[{l:"Mehr als 30 % des Teams",s:1},{l:"15–30 % des Teams",s:2},{l:"5–15 % des Teams",s:3},{l:"Unter 5 % – sehr stabil",s:4}]},
+  { cat:"Dimension 4 — Stressmanagement",
+    text:"Haben Ihre Mitarbeitenden konkrete Techniken, um in Konfliktsituationen mit Kunden stabil zu bleiben?",
+    hint:"Z.B. Deeskalationstechniken, Atemübungen, Pausenrituale.", dim:3,
+    opts:[{l:"Nein – das wird nicht thematisiert",s:1},{l:"Es liegt an der Person selbst",s:2},{l:"Wir haben einmal ein Training gemacht",s:3},{l:"Ja – wir trainieren das systematisch",s:4}]},
+  { cat:"Dimension 4 — Stressmanagement",
+    text:"Wie gut erholen sich Ihre Kundenkontakt-Teams in Pausen und nach Schichten?",
+    hint:"Bezogen auf die aktuelle Pausen- und Dienstplangestaltung.", dim:3,
+    opts:[{l:"Pausen sind zu kurz oder werden nicht eingehalten",s:1},{l:"Pausen existieren, echte Erholung findet kaum statt",s:2},{l:"Es ist okay, aber optimierbar",s:3},{l:"Sehr gut – wir achten aktiv auf Erholungsphasen",s:4}]},
+  { cat:"Dimension 1 — Emotionale Belastung",
+    text:"Wie oft kommt es zu emotionalen Ausbrüchen oder Konflikten im Team durch Überlastung?",
+    hint:"Interne Konflikte als Folge von Kundenstress.", dim:0,
+    opts:[{l:"Häufig – mindestens wöchentlich",s:1},{l:"Gelegentlich – ca. 1–2x pro Monat",s:2},{l:"Selten – ein paarmal pro Quartal",s:3},{l:"Kaum – unser Klima ist stabil",s:4}]},
+  { cat:"Dimension 2 — Führungskultur",
+    text:"Würde es Sie überraschen, wenn jemand aus Ihrem Team morgen kündigt?",
+    hint:"Eine ehrliche Reflexionsfrage – bitte antworten Sie spontan.", dim:1,
+    opts:[{l:"Nein – ich rechne damit bei mehreren",s:1},{l:"Bei einzelnen wäre es nicht überraschend",s:2},{l:"Eher ja – aber ich bin nicht sicher",s:3},{l:"Ja – ich bin von der Bindung meines Teams überzeugt",s:4}]},
+];
+
+const DIMS = [
+  {name:"Emotionale Belastung",           color:"#e05050"},
+  {name:"Führungskultur & Früherkennung", color:"#d4a843"},
+  {name:"Fluktuationsrisiko",             color:"#e0903a"},
+  {name:"Stressmanagement",              color:"#4caf87"},
+];
+
+/* ─── STATE ─── */
+let cur = 0;
+let ans = new Array(QS.length).fill(null);
+
+/* ─── UTILS ─── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ─── START ─── */
+function startTest() { showScreen('s-question'); renderQ(); }
+
+/* ─── RENDER ─── */
+function renderQ() {
+  const q = QS[cur];
+  const main = document.getElementById('q-main');
+  main.style.animation = 'none'; void main.offsetWidth; main.style.animation = 'fadeUp .35s ease forwards';
+
+  document.getElementById('q-cat').textContent  = q.cat;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-hint').textContent = q.hint;
+  document.getElementById('prog').style.width     = (cur / QS.length * 100) + '%';
+  document.getElementById('prog-lbl').textContent = (cur+1) + ' / ' + QS.length;
+  document.getElementById('btn-back').style.display = cur === 0 ? 'none' : 'inline-flex';
+
+  const keys = ['A','B','C','D'];
+  const wrap = document.getElementById('q-opts');
+  wrap.innerHTML = '';
+  q.opts.forEach((o,i) => {
+    const d = document.createElement('div');
+    d.className = 'opt' + (ans[cur]===i?' chosen':'');
+    d.innerHTML = `<span class="opt-key">${keys[i]}</span><span>${o.l}</span>`;
+    d.onclick = () => pick(i);
+    wrap.appendChild(d);
+  });
+  document.getElementById('btn-next').disabled = (ans[cur] === null);
+}
+
+function pick(i) {
+  ans[cur] = i;
+  document.querySelectorAll('.opt').forEach((el,j) => el.classList.toggle('chosen', j===i));
+  document.getElementById('btn-next').disabled = false;
+  setTimeout(() => { if (ans[cur]!==null) nextQ(); }, 620);
+}
+function nextQ() { if(cur<QS.length-1){cur++;renderQ();}else showScreen('s-contact'); }
+function prevQ() { if(cur>0){cur--;renderQ();} }
+function skipQ() { ans[cur]=null; if(cur<QS.length-1){cur++;renderQ();}else showScreen('s-contact'); }
+
+/* ─── RESULT ─── */
+function goResult() { showScreen('s-result'); buildResult(); }
+
+function buildResult() {
+  let total=0, answered=0;
+  let ds=[0,0,0,0], dc=[0,0,0,0];
+  QS.forEach((q,i) => {
+    if(ans[i]!==null){ const s=q.opts[ans[i]].s; total+=s; answered++; ds[q.dim]+=s; dc[q.dim]++; }
+  });
+  const pct = answered>0 ? Math.round((total/(answered*4))*100) : 50;
+  const col = pct>=70 ? '#4caf87' : pct>=45 ? '#d4a843' : '#e05050';
+
+  setTimeout(()=>{
+    const fill = document.getElementById('c-fill');
+    fill.style.stroke = col;
+    fill.style.strokeDashoffset = 503 - (pct/100)*503;
+    const sn = document.getElementById('score-n');
+    sn.textContent = pct;
+    sn.style.color = col;
+  }, 120);
+
+  let bc, bt, hl, desc;
+  if(pct>=70){
+    bc='st-g'; bt='✓ Gute Grundlage';
+    hl='Ihr Team zeigt <em>solide Resilienz</em> – mit Luft nach oben.';
+    desc='Ihre Organisation hat bereits wichtige Grundlagen geschaffen. Mit gezielten Maßnahmen in den schwächeren Bereichen können Sie Ihrem Team einen entscheidenden Vorsprung verschaffen – bevor Erschöpfung sichtbar wird.';
+  } else if(pct>=45){
+    bc='st-o'; bt='⚠ Handlungsbedarf';
+    hl='Erste <em>Warnsignale</em> sind sichtbar – jetzt ist der richtige Moment.';
+    desc='Ihr Team zeigt Muster, die auf mittelfristigen Burnout und erhöhte Fluktuation hindeuten. In diesem Stadium lässt sich mit den richtigen Maßnahmen noch viel bewegen – bevor es teuer wird.';
+  } else {
+    bc='st-r'; bt='🔴 Dringender Handlungsbedarf';
+    hl='Ihr Team befindet sich in einem <em>kritischen Zustand.</em>';
+    desc='Die Ergebnisse zeigen klare Zeichen struktureller Überlastung. Ohne gezielte Intervention drohen weiterer Fachkräfteverlust, steigende Fehlzeiten und Qualitätsverlust im Kundenerlebnis. Bitte handeln Sie jetzt.';
+  }
+  const badge = document.getElementById('r-badge');
+  badge.className = 'r-badge ' + bc; badge.textContent = bt;
+  document.getElementById('r-hl').innerHTML = hl;
+  document.getElementById('r-desc').textContent = desc;
+
+  const dl = document.getElementById('dim-list'); dl.innerHTML='';
+  DIMS.forEach((d,i)=>{
+    const raw = dc[i]>0 ? ds[i]/dc[i] : 2;
+    const p = Math.round(((raw-1)/3)*100);
+    const note = p>=70?'Gut aufgestellt – gezielte Optimierung möglich':p>=45?'Mittleres Risiko – strukturierte Maßnahmen empfohlen':'Kritischer Bereich – priorisierter Handlungsbedarf';
+    dl.innerHTML+=`<div class="dim-item"><div class="dim-row"><span class="dim-name">${d.name}</span><span class="dim-pct">${p} / 100</span></div><div class="dim-trk"><div class="dim-bar" data-w="${p}" style="background:${d.color}"></div></div><div class="dim-note">${note}</div></div>`;
+  });
+  setTimeout(()=>{ document.querySelectorAll('.dim-bar').forEach(b=>b.style.width=b.dataset.w+'%'); },200);
+
+  const recs = pct<70 ? [
+    {i:'🎨',t:'Kunsttherapeutische Stressregulation',p:'Kreative Methoden helfen Teams, emotionale Belastungen sichtbar zu machen und loszulassen – ohne Worte, ohne Druck.'},
+    {i:'🧠',t:'Führungskräfte-Coaching',p:'Ihre Teamleitungen brauchen Tools zur Früherkennung. Ein 6-Sitzungen-Programm schult den Blick für stille Signale.'},
+    {i:'📊',t:'CORE Belastungsdiagnose',p:'Eine strukturierte Erstanalyse liefert ein klares Bild: Wo brennt es? Wo droht Fluktuation?'},
+    {i:'⚡',t:'Workshop: Stressregulation live',p:'Ein 3-stündiger Team-Workshop mit sofort anwendbaren Techniken für den Alltag im Kundenkontakt.'},
+  ]:[
+    {i:'🏆',t:'Jahresprogramm CORE Corporate',p:'Ihre gute Basis verdient systematische Weiterentwicklung. Mit einem Jahresprogramm bleiben Sie dauerhaft vorne.'},
+    {i:'📈',t:'Resilienz als Wettbewerbsvorteil',p:'Nutzen Sie Ihre starke Teamkultur aktiv im Recruiting und Employer Branding.'},
+    {i:'🎯',t:'Vertiefungs-Workshop Führungskräfte',p:'Psychologische Tiefe trifft unternehmerisches Denken – exklusiv für Ihre Leitungsebene.'},
+  ];
+  document.getElementById('rec-grid').innerHTML = recs.map(r=>`<div class="rec-card"><div class="rec-icon">${r.i}</div><h4>${r.t}</h4><p>${r.p}</p></div>`).join('');
+}
+
+/* ─── SEND FORM ─── */
+async function sendForm() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const msg   = document.getElementById('f-msg-txt').value.trim();
+  const fb    = document.getElementById('f-feedback');
+  const btn   = document.getElementById('f-btn');
+
+  if(!name||!email){
+    fb.className='f-msg err'; fb.textContent='Bitte Name und E-Mail-Adresse eingeben.'; fb.style.display='block'; return;
+  }
+  btn.disabled=true; btn.textContent='Wird gesendet …';
+
+  try {
+    // ➡ Ersetzen Sie IHRE_FORM_ID mit Ihrer echten ID von formspree.io (kostenlos)
+    const r = await fetch('https://formspree.io/f/xbdqzbza',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Accept:'application/json'},
+      body:JSON.stringify({name,email,message:msg,_subject:'Resilienztest-Anfrage von '+name})
+    });
+    if(r.ok){
+      fb.className='f-msg ok';
+      fb.innerHTML='✓ Vielen Dank! Thekla Joppeck meldet sich innerhalb von 24 Stunden bei Ihnen.';
+      document.getElementById('f-name').style.display='none';
+      document.getElementById('f-email').style.display='none';
+      document.getElementById('f-msg-txt').style.display='none';
+      btn.style.display='none';
+    } else { throw new Error(); }
+  } catch {
+    fb.className='f-msg ok';
+    fb.innerHTML='📞 <strong>+49 156 7979 0085</strong><br>✉ <strong>Thekla@innenlicht-jetzt.com</strong><br><small>Thekla Joppeck freut sich auf Ihre Kontaktaufnahme!</small>';
+    btn.disabled=false; btn.textContent='Rückruf / Termin anfragen →';
+  }
+  fb.style.display='block';
+}
+
+/* ─── KEYBOARD ─── */
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('s-question').classList.contains('active')) return;
+  const m={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+  const i=m[e.key.toLowerCase()];
+  if(i!==undefined) document.querySelectorAll('.opt')[i]?.click();
+  if(e.key==='Enter'){ const b=document.getElementById('btn-next'); if(!b.disabled) nextQ(); }
+});
+</script>
+</body>
+</html>
